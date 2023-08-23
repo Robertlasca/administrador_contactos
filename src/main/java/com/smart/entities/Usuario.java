@@ -34,8 +34,8 @@ public class Usuario {
 	private String imageUrl;
 	@Column(length = 500)
 	private String about;
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	private List<Contacto> contactos= new ArrayList<>();
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Contacto> contactos = new ArrayList<>();
 	public Usuario(int id, String nombre, String email, String pasword, String role, boolean enabled, String imageUrl,
 			String about) {
 		super();

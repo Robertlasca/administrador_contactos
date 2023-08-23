@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -14,7 +15,7 @@ public class Contacto {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int cId;
+	private int id;
 	
 	private String nombre;
 	
@@ -28,18 +29,19 @@ public class Contacto {
 	
 	private String image;
 	
-	@Column(length = 50000)
+	@Column(length = 1000)
 	private String descripcion;
 	
-	@ManyToOne
-	private Usuario usuario;
+	 @ManyToOne
+	    @JoinColumn(name = "usuario_id") // Esto indica la columna de unión en la tabla de Contacto
+	    private Usuario usuario;
 	
 	
 
 	public Contacto(int cId, String nombre, String apellidos, String trabajo, String email, String telefono,
 			String image, String descripcion, Usuario usuario) {
 		super();
-		this.cId = cId;
+		this.id = cId;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.trabajo = trabajo;
@@ -53,7 +55,7 @@ public class Contacto {
 	public Contacto(int cId, String nombre, String apellidos, String trabajo, String email, String telefono,
 			String image, String descripcion) {
 		super();
-		this.cId = cId;
+		this.id = cId;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.trabajo = trabajo;
@@ -80,11 +82,11 @@ public class Contacto {
 	}
 
 	public int getcId() {
-		return cId;
+		return id;
 	}
 
 	public void setcId(int cId) {
-		this.cId = cId;
+		this.id = cId;
 	}
 
 	public String getNombre() {
