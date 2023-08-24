@@ -17,7 +17,7 @@ public class HomeController {
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
 	
-	@RequestMapping("/home")
+	@RequestMapping("/")
 	public String home(Model model)
 	
 	{
@@ -33,5 +33,14 @@ public class HomeController {
 		return "about";
 	}
 	
+	@RequestMapping("/signup")
+	public String signup(Model model)
+	
+	{
+		model.addAttribute("title", "Registro - Smart Contact Manager");
+		
+		
+		return "signup";
+	}
 	
 }

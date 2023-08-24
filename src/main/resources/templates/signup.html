@@ -1,0 +1,68 @@
+<!DOCTYPE html >
+<html lang="en" xmlns="http://www.thymeleaf.org" th:replace="base::layout(~{::section})"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+</head>
+<body>
+
+    <section>
+        <div class="container">
+           <div class="row">
+            <div class="col-md-8 offset-md-2">
+                
+                <div class="my-card mt-3">
+
+                    
+                    <div class="container text-center">
+                        <img  style="width: 80px;" th:src="@{/img/registro.png}" alt="">
+
+
+                    </div>
+                    <h1 class="text-center">Registrate aquí</h1>
+                    <form th:action="@{/registrar}" method="post">
+                        <!--Nombre-->
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe tu nombre" required="Este campo es requerido.">
+                     
+                        </div>
+
+                        <!--Email-->
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Escribe tu email" required="Este campo es requerido.">
+                     
+                        </div>
+
+                        <!--Password-->
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Escribe una contraseña" required="Este campo es requerido.">
+                     
+                        </div>
+
+                        <div class="form-group">
+                            <textarea name="about" placeholder="Escribe sobre ti" id="about" rows="6"  class="form-control"></textarea>
+                        </div>
+
+                        <div class="container">
+                            <button type="submit" class="btn btn-info text-white btn-block">
+                                Enviar
+                            </button>
+
+                            <button type="reset" class="btn btn-warning btn-block" >
+                                Limpiar
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+           </div> 
+        </div>
+    </section>
+</body>
+</html>
