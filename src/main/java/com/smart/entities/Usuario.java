@@ -142,7 +142,17 @@ public class Usuario {
 
 	public void setContactos(List<Contacto> contactos) {
 		this.contactos = contactos;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Usuario [id=" + id + ", nombre=" + nombre + ", email=" + email + ", pasword=" + pasword + ", role="
+				+ role + ", enabled=" + enabled + ", imageUrl=" + imageUrl + ", about=" + about + ", contactos="
+				+ contactos + "]";
 	} 
+	
+	
 	
 	
 	
