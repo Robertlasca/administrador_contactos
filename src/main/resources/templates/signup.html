@@ -1,5 +1,5 @@
 <!DOCTYPE html >
-<html lang="en" xmlns="http://www.thymeleaf.org" th:replace="base::layout(~{::section})"> 
+<html lang="en" xmlns="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,9 +19,6 @@
                 
                 <div class="my-card mt-1">
 
-                    <div th:if="${session.message}" th:classappend="${session.message.tipo}" class="alert" role="alert">
-                        <p class="text-center" th:text="${session.message.contenido}"></p>
-                      </div>
 
                     
                     <div class="container text-center">
@@ -30,11 +27,14 @@
 
                     </div>
                     <h1 class="text-center">Registrate aquí</h1>
-                    <form th:action="@{/registrar}" method="post" th:object="${usuario}">
+                    <form novalidate th:action="@{/registrar}" method="post" th:object="${usuario}">
                         <!--Nombre-->
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" placeholder="Escribe tu nombre" required="Este campo es requerido.">
+                            <input type="text" class="form-control " th:classappend="${#fields.hasErrors('nombre') ? 'is-invalid':''}"  id="nombre" name="nombre" th:value="${usuario.nombre}" placeholder="Escribe tu nombre" required="Este campo es requerido.">
+                            <div class="invalid-feedback" th:each="e : ${#fields.hasErrors('nombre')}" th:text="${e}">
+                 
+                            </div>
                      
                         </div>
 

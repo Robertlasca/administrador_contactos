@@ -3,7 +3,10 @@ package com.smart.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +19,7 @@ import com.smart.helper.Message;
 import com.smart.repositorys.IUsuarioRepository;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class HomeController {
@@ -52,54 +56,55 @@ public class HomeController {
 	
 	//Metodo para registrar
 	@PostMapping("/registrar")
-	public String registroUsuario(Usuario usuario,@RequestParam(value="agreement",defaultValue = "false") boolean acepto,Model model,RedirectAttributes mensaje )
-	{
-		try {
-			if(!acepto) {
-				System.out.println("No aceptaste los terminos");
-				mensaje.addFlashAttribute("alerta", "¡Alerta!");
-				mensaje.addFlashAttribute("alertIcon", "error");
-				mensaje.addFlashAttribute("alertTitle", "Por favor");
-				mensaje.addFlashAttribute("alertMessage", "Acepta los terminos y condiciones");
-				return "redirect:/signup";
+	public String registroUsuario(
+	        @javax.validation.Valid @ModelAttribute("usuario") Usuario usuario,
+	        BindingResult result1,
+	        @RequestParam(value = "agreement", defaultValue = "false") boolean acepto,
+	        Model model,
+	        RedirectAttributes mensaje
+	) {
+	    try {
+	        if (!acepto) {
+	            // Si no se aceptan los términos, mostrar un mensaje de alerta y redirigir
+	            mensaje.addFlashAttribute("alerta", "¡Alerta!");
+	            mensaje.addFlashAttribute("alertIcon", "error");
+	            mensaje.addFlashAttribute("alertTitle", "Por favor");
+	            mensaje.addFlashAttribute("alertMessage", "Acepta los términos y condiciones");
+	            return "redirect:/signup";
+	        } else {
+	            if (result1.hasErrors()) {
+	                // Si hay errores de validación, mostrar el formulario de registro nuevamente
+	                // junto con los mensajes de error
+	                model.addAttribute("usuario", usuario);
+	                return "signup";
+	            } else {
+	                // Si no hay errores, proceder con el registro del usuario
+	                usuario.setRole("USER");
+	                usuario.setEnabled(true);
+	                usuario.setImageUrl("default.png");
 
-				
-				
-			}else {
-				System.out.println("Si aceptaste los terminos");
-				usuario.setRole("USER");
-				usuario.setEnabled(true);
-				usuario.setImageUrl("default.png");
-				
-				Usuario user= usuarioRepository.save(usuario);
-				
-				
-				System.out.println("Mi usuario"+usuario.toString());
-				System.out.println("Valor de la variable"+acepto);
-				
-				model.addAttribute("usuario",new Usuario());
-				mensaje.addFlashAttribute("alerta", "¡Alerta!");
-				mensaje.addFlashAttribute("alertIcon", "success");
-				mensaje.addFlashAttribute("alertTitle", "Correcto");
-				mensaje.addFlashAttribute("alertMessage", "Haz sido registrado");
-				return "redirect:/signup";
-				//return "signup";
-			}
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("user", usuario);
-			mensaje.addFlashAttribute("alerta", "¡Alerta!");
-			mensaje.addFlashAttribute("alertIcon", "error");
-			mensaje.addFlashAttribute("alertTitle", "Incorrecto");
-			mensaje.addFlashAttribute("alertMessage", "Error interno");
-			//return "signup";
-			return "redirect:/signup";
-		}
-		
-		
+	                Usuario user = usuarioRepository.save(usuario);
+
+	                // Mostrar un mensaje de éxito y redirigir
+	                mensaje.addFlashAttribute("alerta", "¡Alerta!");
+	                mensaje.addFlashAttribute("alertIcon", "success");
+	                mensaje.addFlashAttribute("alertTitle", "Correcto");
+	                mensaje.addFlashAttribute("alertMessage", "Has sido registrado");
+	                return "redirect:/signup";
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        // Si ocurre una excepción, mostrar un mensaje de error y redirigir
+	        model.addAttribute("usuario", usuario);
+	        mensaje.addFlashAttribute("alerta", "¡Alerta!");
+	        mensaje.addFlashAttribute("alertIcon", "error");
+	        mensaje.addFlashAttribute("alertTitle", "Incorrecto");
+	        mensaje.addFlashAttribute("alertMessage", "Error interno");
+	        return "redirect:/signup";
+	    }
 	}
+
 	
 	
 	
