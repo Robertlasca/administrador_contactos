@@ -1,66 +1,52 @@
 package com.smart.configuration;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
 
 import com.smart.entities.Usuario;
+import com.smart.repositorys.IUsuarioRepository;
 
-public class CustomUserDetails implements UserDetails{
+@Service
+public class CustomUserDetails implements UserDetailsService{
 	
-	private Usuario user;
+	@Autowired
+	IUsuarioRepository usuarioRepository;
 	
+	private Logger log= (Logger) LoggerFactory.getLogger(UserDetailsService.class);
 	
-
-	public CustomUserDetails(Usuario user) {
-		super();
-		this.user = user;
-	}
-
+	private Usuario userDetail;
+	
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		SimpleGrantedAuthority simple= new SimpleGrantedAuthority(user.getRole());
-		return List.of(simple);
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		log.info("Este es el username");
+		Optional<Usuario> optionalUser=usuarioRepository.findByEmail(username);
+		if (optionalUser.isPresent()) {
+			log.info("Esto es el id del usuario: {}", optionalUser.get().getId());
+			Usuario usuario= optionalUser.get();
+			return User.builder()
+                    .username(usuario.getEmail())
+                    .password(usuario.getPasword())
+                    .roles(usuario.getRole())
+                    .build();
+		}else {
+			throw new UsernameNotFoundException("Usuario no encontrado");			
+		}
 	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return user.getPasword();
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return user.getEmail();
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+	
 
 }

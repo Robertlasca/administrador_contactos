@@ -1,6 +1,10 @@
 package com.smart.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,15 +29,30 @@ import jakarta.validation.Valid;
 public class HomeController {
 	
 	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
 	private IUsuarioRepository usuarioRepository;
 	
 	@RequestMapping("/")
 	public String home(Model model)
 	
 	{
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        
+	        // Obtener los roles del usuario autenticado
+	        if (authentication != null && authentication.getAuthorities() != null) {
+	            for (GrantedAuthority authority : authentication.getAuthorities()) {
+	                String role = authority.getAuthority();
+	                System.out.println("Rol del usuario: " + role);
+	                // Puedes realizar la lógica de autorización basada en el rol aquí
+	            }
+	        }
 		model.addAttribute("title", "Home - Smart Contact Manager");
 		return "home";
 	}
+	
+	
 	
 	@RequestMapping("/about")
 	public String about(Model model)
@@ -82,6 +101,7 @@ public class HomeController {
 	                usuario.setRole("USER");
 	                usuario.setEnabled(true);
 	                usuario.setImageUrl("default.png");
+	                usuario.setPasword(passwordEncoder.encode(usuario.getPasword()));
 
 	                Usuario user = usuarioRepository.save(usuario);
 
@@ -104,7 +124,12 @@ public class HomeController {
 	        return "redirect:/signup";
 	    }
 	}
-
+	
+	@RequestMapping("/signin")
+	public String login(Model model) {
+		model.addAttribute("title", "Login - Smart Contact Manager");
+		return "login";
+	}
 	
 	
 	
